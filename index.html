@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/exceljs/1.4.6/exceljs.js"></script>
+    <script>
+        // ExcelJS
+        var wb = new ExcelJS.Workbook();
+        var ws = wb.addWorksheet('blort');
+
+        ws.columns = [{
+                header: 'Id',
+                key: 'id',
+                width: 10
+            },
+            {
+                header: 'Name',
+                key: 'name',
+                width: 32
+            },
+            {
+                header: 'D.O.B.',
+                key: 'DOB',
+                width: 10,
+                outlineLevel: 1
+            }
+        ];
+
+        ws.addRow({id: 1, name: 'John Doe', dob: new Date(1970,1,1)});
+        wb.xlsx.writeBuffer({
+            base64: true
+        }).then(function (xls64) {
+            // build anchor tag and attach file (works in chrome)
+            var a = document.createElement("a");
+            var data = new Blob([xls64], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            });
+
+            var url = URL.createObjectURL(data);
+            a.href = url;
+            a.download = "export.xlsx";
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function () {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                },
+                0);
+        });
+        console.log('is ok');
+    </script>
+</body>
+
+</html>
